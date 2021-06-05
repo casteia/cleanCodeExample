@@ -1,24 +1,12 @@
-import Class from "../models/class/Class";
-import Level from "../models/level/Level";
-import Module from "../models/module/Module";
+import Module from "./Module";
+import ModuleRepository from "./ModuleRepository";
 
-export default class InMemoryDatabaseDummy{
-    levels: Level[] = [];
+export default class ModuleRepositoryInMemory implements ModuleRepository{
     modules: Module[] = [];
-    classes: Class[] = [];
+
 
     constructor(){
-        this.initializeLevels();
         this.initializeModules();
-        this.initializeClasses();
-    }
-
-    private initializeLevels(){
-        this.levels = [
-            new Level("EF1", "Ensino Fundamental I"),
-            new Level("EF2", "Ensino Fundamental II"),
-            new Level("EM", "Ensino Médio"),
-        ];
     }
 
     private initializeModules(){
@@ -40,7 +28,7 @@ export default class InMemoryDatabaseDummy{
 
     private generateDummyModule(level: string, code: string, description: string, minumumAge: number, price: number): Module{
         return {
-            level: this.levels.find(x => x.code === level),
+            level: level,
             code: code,
             description: description,
             minumumAge: minumumAge,
@@ -48,18 +36,8 @@ export default class InMemoryDatabaseDummy{
         };
     }
 
-    private initializeClasses(){
-        this.classes = [
-            this.generateDummyClass("EM", "3", "A", 10)
-        ];
+    findModuleByCode(moduleCode: string, levelCode: string): Module {
+        return this.modules.find(x => x.code === moduleCode && x.level === levelCode) as Module;
     }
-
-    private generateDummyClass(level: string, module: string, code: string, capacity: number): Class{
-        return {
-            module: this.modules.find(x => x.code === module && x.level?.code === level),
-            level: this.levels.find(x => x.code === level),
-            code: code,
-            capacity: capacity,
-        }
-    }
+    
 }

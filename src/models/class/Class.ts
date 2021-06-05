@@ -2,8 +2,8 @@ import Level from "../level/Level";
 import Module from "../module/Module";
 
 export default class{
-    level?: Level;
-    module?: Module;
+    level: string;
+    module: string;
     code: string;
     capacity: number;
 }

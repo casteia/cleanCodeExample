@@ -1,7 +1,7 @@
 import Level from "../level/Level";
 
 export default class{
-    level?: Level;
+    level: string;
     code: string;
     description: string;
     minumumAge: number;
