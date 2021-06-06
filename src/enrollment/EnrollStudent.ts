@@ -8,6 +8,7 @@ import LevelRepository from "../models/level/LevelRepositoryInMemory";
 import classRepository from "../models/class/ClassRepository";
 import LevelRepositoryInMemory from "../models/level/LevelRepositoryInMemory";
 import ModuleRepositoryInMemory from "../models/module/ModuleRepositoryInMemory";
+import Level from "../models/level/Level";
 
 export default class EnrollStudents{
     enrollments: Enrollment[] = [];
@@ -22,35 +23,34 @@ export default class EnrollStudents{
     }
 
     public execute(student: Student, level: string, module: string, enrollmentClass: string): Enrollment{
-        this.validateStudent(student, level, module, enrollmentClass);
-        //TODO: mover pra cima, moduar parametro pra enrollment apenas
         const enrollment = new Enrollment(
             student
             , this.levelRepository.findLevelByCode(level)
             , this.moduleRepository.findModuleByCode(module, level)
             , this.classRepository.findClassByCode(enrollmentClass));
+        this.validateStudent(enrollment);
         this.enrollments.push(enrollment);
         return enrollment;
     }
 
-    private validateStudent(student: Student, level: string, module: string, enrollmentClass: string){
-        this.validateIfStudentAlreadyEnrolled(student.cpf);
-        this.validateIfStudentHasMinimumAge(student, level, module);
-        this.validateIfClassHasCapacity(enrollmentClass);
+    private validateStudent(enrollment: Enrollment){
+        this.validateIfStudentAlreadyEnrolled(enrollment.student.cpf);
+        this.validateIfStudentHasMinimumAge(enrollment);
+        this.validateIfClassHasCapacity(enrollment);
     }
 
     private validateIfStudentAlreadyEnrolled(cpf: Cpf){
         if(this.enrollments.find(x => x.student.cpf.value === cpf.value)) throw new Error(ErrorMessages.studentAlreadyEnrolled);
     }
 
-    private validateIfStudentHasMinimumAge(student: Student, levelCode: string, moduleCode: string){
-        const module = this.moduleRepository.findModuleByCode(moduleCode, levelCode);
-        if(student.getCurrentAge() < module.minumumAge) throw new Error(ErrorMessages.studentBelowMinimumAge);
+    private validateIfStudentHasMinimumAge(enrollment: Enrollment){
+        const module = this.moduleRepository.findModuleByCode(enrollment.module.code, enrollment.level.code);
+        if(enrollment.student.getCurrentAge() < module.minumumAge) throw new Error(ErrorMessages.studentBelowMinimumAge);
     }
 
-    private validateIfClassHasCapacity(enrollmentClassCode: string){
-        const currentStudentsEnrolled = this.enrollments.filter(x => x.class.code === enrollmentClassCode).length;
-        const enrollmenClass = this.classRepository.findClassByCode(enrollmentClassCode);
+    private validateIfClassHasCapacity(enrollment: Enrollment){
+        const currentStudentsEnrolled = this.enrollments.filter(x => x.class.code === enrollment.class.code).length;
+        const enrollmenClass = this.classRepository.findClassByCode(enrollment.class.code);
         if(currentStudentsEnrolled >= enrollmenClass.capacity) throw new Error(ErrorMessages.classOverCapacity);
     }
     
