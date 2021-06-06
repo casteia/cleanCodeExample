@@ -9,6 +9,8 @@ import classRepository from "../models/class/ClassRepository";
 import LevelRepositoryInMemory from "../models/level/LevelRepositoryInMemory";
 import ModuleRepositoryInMemory from "../models/module/ModuleRepositoryInMemory";
 import Level from "../models/level/Level";
+import Installment from "../models/Installments/Installment";
+import CalculateInstallments from "../models/Installments/CalculateInstallments";
 
 export default class EnrollStudents{
     enrollments: Enrollment[] = [];
@@ -22,13 +24,15 @@ export default class EnrollStudents{
         this.levelRepository = new LevelRepositoryInMemory();
     }
 
-    public execute(student: Student, level: string, module: string, enrollmentClass: string): Enrollment{
+    public execute(student: Student, level: string, module: string, enrollmentClass: string, installments: number): Enrollment{
         const enrollment = new Enrollment(
             student
             , this.levelRepository.findLevelByCode(level)
             , this.moduleRepository.findModuleByCode(module, level)
-            , this.classRepository.findClassByCode(enrollmentClass));
+            , this.classRepository.findClassByCode(enrollmentClass)
+            , installments);
         this.validateStudent(enrollment);
+        enrollment.installments = this.calculateInstallments(enrollment);
         this.enrollments.push(enrollment);
         return enrollment;
     }
@@ -66,6 +70,10 @@ export default class EnrollStudents{
         let enrollmentTimeDifference = currentDate.getTime() - enrollment.class.start_date.getTime();
         let timeDifferenceInPercentage = (enrollmentTimeDifference / enrollment.class.getTimeDuration()) * 100;
         if(timeDifferenceInPercentage > 25) throw new Error(ErrorMessages.lateEnrollment);
+    }
+
+    private calculateInstallments(enrollment: Enrollment): Installment[]{
+        return new CalculateInstallments(enrollment).execute();
     }
     
 }

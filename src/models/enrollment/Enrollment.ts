@@ -1,4 +1,5 @@
 import Class from "../class/Class";
+import Installment from "../Installments/Installment";
 import Level from "../level/Level";
 import Module from "../module/Module";
 import Student from "../Student/Student";
@@ -11,14 +12,17 @@ export default class Enrollment{
     module: Module;
     class: Class;
     code: string;
+    numberOfInstallments: number;
+    installments: Installment[];
 
-    constructor(student: Student, level: Level, module: Module, enrollmentClass: Class){
+    constructor(student: Student, level: Level, module: Module, enrollmentClass: Class, numberOfInstallments: number){
         this.assignUniqueEnrollmentId();
         this.student = student;
         this.level = level;
         this.module = module;
         this.class = enrollmentClass;
         this.code = this.generateEnrollmentCode(level, module, enrollmentClass, this.id);
+        this.numberOfInstallments = numberOfInstallments;
     }
     
     private assignUniqueEnrollmentId(){
