@@ -37,6 +37,8 @@ export default class EnrollStudents{
         this.validateIfStudentAlreadyEnrolled(enrollment.student.cpf);
         this.validateIfStudentHasMinimumAge(enrollment);
         this.validateIfClassHasCapacity(enrollment);
+        this.validadeIfClassIsAlreadyOver(enrollment);
+        this.validateIfClassAlreadyStarted(enrollment);
     }
 
     private validateIfStudentAlreadyEnrolled(cpf: Cpf){
@@ -52,6 +54,18 @@ export default class EnrollStudents{
         const currentStudentsEnrolled = this.enrollments.filter(x => x.class.code === enrollment.class.code).length;
         const enrollmenClass = this.classRepository.findClassByCode(enrollment.class.code);
         if(currentStudentsEnrolled >= enrollmenClass.capacity) throw new Error(ErrorMessages.classOverCapacity);
+    }
+
+    private validadeIfClassIsAlreadyOver(enrollment: Enrollment){
+        let isClassAlreadyOver = enrollment.class.end_date < new Date();
+        if(isClassAlreadyOver) throw new Error(ErrorMessages.classAlreadyOver);
+    }
+
+    private validateIfClassAlreadyStarted(enrollment: Enrollment){
+        let currentDate = new Date();
+        let enrollmentTimeDifference = currentDate.getTime() - enrollment.class.start_date.getTime();
+        let timeDifferenceInPercentage = (enrollmentTimeDifference / enrollment.class.getTimeDuration()) * 100;
+        if(timeDifferenceInPercentage > 25) throw new Error(ErrorMessages.lateEnrollment);
     }
     
 }

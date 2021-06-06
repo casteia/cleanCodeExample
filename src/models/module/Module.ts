@@ -1,6 +1,6 @@
 import Level from "../level/Level";
 
-export default class{
+export default class Module{
     level: string;
     code: string;
     description: string;

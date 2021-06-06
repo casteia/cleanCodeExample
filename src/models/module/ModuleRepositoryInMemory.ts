@@ -16,13 +16,13 @@ export default class ModuleRepositoryInMemory implements ModuleRepository{
             , {...this.generateDummyModule("EF1", "3", "3o Ano", 8, 15000)}
             , {...this.generateDummyModule("EF1", "4", "4o Ano", 9, 15000)}
             , {...this.generateDummyModule("EF1", "5", "5o Ano", 10, 15000)}
-            , {...this.generateDummyModule("EF2", "6", "6o Ano", 11, 15000)}
-            , {...this.generateDummyModule("EF2", "7", "7o Ano", 12, 15000)}
-            , {...this.generateDummyModule("EF2", "8", "8o Ano", 13, 15000)}
-            , {...this.generateDummyModule("EF2", "9", "9o Ano", 14, 15000)}
-            , {...this.generateDummyModule("EM", "1", "1o Ano", 15, 15000)}
-            , {...this.generateDummyModule("EM", "2", "2o Ano", 16, 15000)}
-            , {...this.generateDummyModule("EM", "3", "3o Ano", 17, 15000)}
+            , {...this.generateDummyModule("EF2", "6", "6o Ano", 11, 14000)}
+            , {...this.generateDummyModule("EF2", "7", "7o Ano", 12, 14000)}
+            , {...this.generateDummyModule("EF2", "8", "8o Ano", 13, 14000)}
+            , {...this.generateDummyModule("EF2", "9", "9o Ano", 14, 14000)}
+            , {...this.generateDummyModule("EM", "1", "1o Ano", 15, 17000)}
+            , {...this.generateDummyModule("EM", "2", "2o Ano", 16, 17000)}
+            , {...this.generateDummyModule("EM", "3", "3o Ano", 17, 17000)}
         ];
     }
 

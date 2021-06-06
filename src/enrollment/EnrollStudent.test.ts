@@ -26,7 +26,7 @@ describe("When enrolling student", () => {
     });
 
     test("Should enroll below minimum age", function(){
-        const student = new Student(new Name("Maria Carolina Fonseca"), new Cpf("755.525.774-26"), new Date(Date.parse('2012-03-12')));
+        const student = new Student(new Name("Maria Carolina Fonseca"), new Cpf("755.525.774-26"), new Date('2012-03-12'));
         let enrollStudent = new EnrollStudents();
         expect(() => enrollStudent.execute(student, "EM", "1", "A")).toThrow(new Error(ErrorMessages.studentBelowMinimumAge));
     });
@@ -36,7 +36,22 @@ describe("When enrolling student", () => {
         for (let index = 0; index < 10; index++) {
             const enrollment = enrollStudent.execute(generateDummyStudent(index), "EM", "1", "A");
         }
-        const student = new Student(new Name("Maria Carolina Fonseca"), new Cpf("755.525.774-26"), new Date(Date.parse('2002-03-12')));
+        const student = new Student(new Name("Maria Carolina Fonseca"), new Cpf("755.525.774-26"), new Date('2002-03-12'));
         expect(() => enrollStudent.execute(student, "EM", "1", "A")).toThrow(new Error(ErrorMessages.classOverCapacity));
     });
+
+    test("Should not enroll after que end of the class", function() {
+        let enrollStudent = new EnrollStudents();
+        let student = new Student(new Name("Maria Carolina Fonseca"), new Cpf("755.525.774-26"), new Date("2002-03-12"));
+        expect(() => enrollStudent.execute(student, "EM", "1", "B")).toThrow(new Error(ErrorMessages.classAlreadyOver));
+    });
+
+    test("Should not enroll after 25% of the start of the class", function() {
+        let enrollStudent = new EnrollStudents();
+        let student = new Student(new Name("Maria Carolina Fonseca"), new Cpf("755.525.774-26"), new Date("2002-03-12"));
+        expect(() => enrollStudent.execute(student, "EM", "1", "C")).toThrow(new Error(ErrorMessages.lateEnrollment));
+    });
+
+    
+
 });
