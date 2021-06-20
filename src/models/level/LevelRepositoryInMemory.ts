@@ -4,16 +4,10 @@ import LevelRepository from "./LevelRepository";
 export default class LevelRepositoryInMemory implements LevelRepository{
     levels: Level[] = [];
     
-    constructor(){
-        this.initializeLevels();
-    }
+    constructor(){}
 
-    private initializeLevels(){
-        this.levels = [
-            new Level("EF1", "Ensino Fundamental I"),
-            new Level("EF2", "Ensino Fundamental II"),
-            new Level("EM", "Ensino Médio"),
-        ];
+    addLevel(code: string, description: string): void{
+        this.levels.push(new Level(code, description));
     }
 
     findLevelByCode(code: string): Level {

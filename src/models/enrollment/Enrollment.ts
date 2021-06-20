@@ -1,8 +1,9 @@
-import Class from "../class/Class";
-import Installment from "../Installments/Installment";
+import Classroom from "../classroom/Class";
+import Installment, { InstallmentStatus } from "../Installments/Installment";
 import Level from "../level/Level";
 import Module from "../module/Module";
 import Student from "../Student/Student";
+import { EnrollmentStatus } from "./EnrollmentStatus";
 
 export default class Enrollment{
     static totalCount = 0;
@@ -10,12 +11,13 @@ export default class Enrollment{
     student: Student;
     level: Level;
     module: Module;
-    class: Class;
+    class: Classroom;
     code: string;
     numberOfInstallments: number;
     installments: Installment[];
+    status: EnrollmentStatus;
 
-    constructor(student: Student, level: Level, module: Module, enrollmentClass: Class, numberOfInstallments: number){
+    constructor(student: Student, level: Level, module: Module, enrollmentClass: Classroom, numberOfInstallments: number){
         this.assignUniqueEnrollmentId();
         this.student = student;
         this.level = level;
@@ -23,6 +25,7 @@ export default class Enrollment{
         this.class = enrollmentClass;
         this.code = this.generateEnrollmentCode(level, module, enrollmentClass, this.id);
         this.numberOfInstallments = numberOfInstallments;
+        this.status = EnrollmentStatus.Active;
     }
     
     private assignUniqueEnrollmentId(){
@@ -30,9 +33,19 @@ export default class Enrollment{
         this.id = `${Enrollment.totalCount}`.padStart(4, '0');
     }
 
-    private generateEnrollmentCode(level: Level, module: Module, enrollmentClass: Class, id: string): string{
+    //TODO: change date so it comes as parameter, to facilidade tests. Maybe use a VO?
+    private generateEnrollmentCode(level: Level, module: Module, enrollmentClass: Classroom, id: string): string{
         const currentYear = new Date().getFullYear();
         const code = `${currentYear}${level.code}${module.code}${enrollmentClass.code}${id}`;
         return code;
+    }
+
+    getBalance(): number{
+        return this.installments.reduce((total, invoice) => {
+            if(invoice.status === InstallmentStatus.Open){
+                total += invoice.amount;
+            }
+            return total;
+        }, 0);
     }
 }

@@ -7,10 +7,10 @@ export default class Student{
     cpf: Cpf;
     birthDate: Date;
     
-    constructor(name: Name, cpf: Cpf, birthDate: Date){
+    constructor(name: Name, cpf: string, birthDate: string){
         this.name = name;
-        this.cpf = cpf;
-        this.birthDate = birthDate
+        this.cpf = new Cpf(cpf);
+        this.birthDate = new Date(Date.parse(birthDate));
     }
 
     public getCurrentAge(): number{

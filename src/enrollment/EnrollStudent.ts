@@ -2,35 +2,36 @@ import Student from "../models/Student/Student";
 import * as ErrorMessages from "../aula-um/ErrorMessages.Util";
 import Cpf from "../models/cpf/Cpf";
 import Enrollment from "../models/enrollment/Enrollment";
-import ClassRepositoryInMemory from "../models/class/ClassRepositoryInMemory";
-import ModuleRepository from "../models/module/ModuleRepositoryInMemory";
-import LevelRepository from "../models/level/LevelRepositoryInMemory";
-import classRepository from "../models/class/ClassRepository";
-import LevelRepositoryInMemory from "../models/level/LevelRepositoryInMemory";
-import ModuleRepositoryInMemory from "../models/module/ModuleRepositoryInMemory";
-import Level from "../models/level/Level";
+import ClassroomRepository from "../models/classroom/ClassroomRepository";
 import Installment from "../models/Installments/Installment";
-import CalculateInstallments from "../models/Installments/CalculateInstallments";
+import CalculateInstallments from "./CalculateInstallments";
+import ModuleRepository from "../models/module/ModuleRepository";
+import LevelRepository from "../models/level/LevelRepository";
+import EnrollmentDTO from "../models/enrollment/EnrollmentDTO";
+import Name from "../models/name/Name";
 
 export default class EnrollStudents{
     enrollments: Enrollment[] = [];
-    classRepository: classRepository;
+    classRepository: ClassroomRepository;
     moduleRepository: ModuleRepository;
     levelRepository: LevelRepository;
 
-    constructor(){
-        this.classRepository = new ClassRepositoryInMemory();
-        this.moduleRepository = new ModuleRepositoryInMemory();
-        this.levelRepository = new LevelRepositoryInMemory();
+    //Use a Facade? AbstractFactory?
+    constructor(classRepository: ClassroomRepository, moduleRepository: ModuleRepository, levelRepository: LevelRepository){
+        this.classRepository = classRepository;
+        this.moduleRepository = moduleRepository;
+        this.levelRepository = levelRepository;
     }
 
-    public execute(student: Student, level: string, module: string, enrollmentClass: string, installments: number): Enrollment{
+    //public execute(student: Student, level: string, module: string, enrollmentClass: string, installments: number): Enrollment{
+    //
+    public execute(enrollmentDTO: EnrollmentDTO): Enrollment{
         const enrollment = new Enrollment(
-            student
-            , this.levelRepository.findLevelByCode(level)
-            , this.moduleRepository.findModuleByCode(module, level)
-            , this.classRepository.findClassByCode(enrollmentClass)
-            , installments);
+            new Student(new Name(enrollmentDTO.studentName), enrollmentDTO.studentCpf, enrollmentDTO.studentBirthDate)
+            , this.levelRepository.findLevelByCode(enrollmentDTO.level)
+            , this.moduleRepository.findModuleByCode(enrollmentDTO.module, enrollmentDTO.level)
+            , this.classRepository.findClassByCode(enrollmentDTO.classroom)
+            , enrollmentDTO.installments);
         this.validateStudent(enrollment);
         enrollment.installments = this.calculateInstallments(enrollment);
         this.enrollments.push(enrollment);
@@ -65,7 +66,9 @@ export default class EnrollStudents{
         if(isClassAlreadyOver) throw new Error(ErrorMessages.classAlreadyOver);
     }
 
+    //TODO: build a VO for date range?
     private validateIfClassAlreadyStarted(enrollment: Enrollment){
+        //TODO: change date to be a parameter
         let currentDate = new Date();
         let enrollmentTimeDifference = currentDate.getTime() - enrollment.class.start_date.getTime();
         let timeDifferenceInPercentage = (enrollmentTimeDifference / enrollment.class.getTimeDuration()) * 100;

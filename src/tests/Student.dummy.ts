@@ -2,7 +2,7 @@ import Cpf from "../models/cpf/Cpf";
 import Name from "../models/name/Name";
 import Student from "../models/Student/Student";
 
-export default function generateDummyStudent(iterator: number): Student{
+export default function generateDummyStudent(iterator: number): {studentName: string, studentCpf: string, studentBirthDate: string} {
     const generatedCpf: string[] = [
         "827.538.690-06",
         "188.784.480-52",
@@ -17,9 +17,9 @@ export default function generateDummyStudent(iterator: number): Student{
         "066.729.250-07"
     ]
 
-    return new Student(
-        new Name("Dummy Student"),
-        new Cpf(generatedCpf[iterator]),
-        new Date(Date.parse('1980-01-01'))
-    );
+    return {
+        studentName: 'Dummy Student',
+        studentCpf: generatedCpf[iterator],
+        studentBirthDate: '1980-01-01'
+    };
 }

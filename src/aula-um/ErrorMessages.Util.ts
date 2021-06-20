@@ -5,3 +5,4 @@ export const studentBelowMinimumAge = "Should not enroll student below minimum a
 export const classOverCapacity = "Class is over capacity";
 export const classAlreadyOver = "Should not enroll after que end of the class";
 export const lateEnrollment  = "Class is already started";
+export const notAbleToCancelEnrollment  = "This enrollment is already cancelled or finished";
