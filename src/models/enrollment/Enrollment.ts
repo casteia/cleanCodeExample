@@ -40,11 +40,18 @@ export default class Enrollment{
         return code;
     }
 
-    getBalance(): number{
+    getBalance_old(baseDate: string): number{
         return this.installments.reduce((total, invoice) => {
             if(invoice.status === InstallmentStatus.Open){
-                total += invoice.amount;
+                total += invoice.getInstallmentBalance(baseDate);
             }
+            return total;
+        }, 0);
+    }
+
+    getBalance(baseDate: string): number{
+        return this.installments.reduce((total, invoice) => {
+            total += invoice.getInstallmentBalance(baseDate);
             return total;
         }, 0);
     }

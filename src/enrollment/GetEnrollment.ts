@@ -20,6 +20,8 @@ export default class GetEnrollment{
     }
 
     private getEnrollmentInstallments(enrollmentCode: string){
-        return this.installmentRepository.getInstallmentsByEnrollmentCode(enrollmentCode);
+        let installments = this.installmentRepository.getInstallmentsByEnrollmentCode(enrollmentCode);
+
+        return installments;
     }
 }

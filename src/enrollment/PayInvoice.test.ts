@@ -24,10 +24,11 @@ describe("When paying invoice", () => {
     });
 
     test("Should pay enrollment invoice", () => {
-        let installmentDto = new InstallmentDTO("2021EM3A0001", 1, 2021, 1000);
+        let installmentDto = new InstallmentDTO("2021EM3A0001", 1, 2021, 1000, '2021-01-01');
         const balanceLeftAfterPayment = new PayInvoice(installmentRepository, enrollmentRepository).execute(installmentDto);
-        expect(balanceLeftAfterPayment).toBe(2000);
+        expect(balanceLeftAfterPayment).toBe(-2000);
     });
+
 });
 
 function setupTestData(){

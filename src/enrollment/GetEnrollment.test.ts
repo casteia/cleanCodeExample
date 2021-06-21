@@ -24,6 +24,7 @@ describe("When getting Enrollment", () => {
     beforeEach(() => {
         enrollmentRepository = new EnrollmentRepositoryInMemory();
         installmentRepository = new InstallmentRepositoryInMemory();
+        Enrollment.totalCount = 0;
         setupTestData();
     })
 
@@ -31,9 +32,18 @@ describe("When getting Enrollment", () => {
         let enrollment = new Enrollment(student, level, enrollmentModule, classroom, 12);
         generateDummyInstallments();
         enrollmentRepository.addEnrollment(enrollment);
-        const calculatedBalance = new GetEnrollment(enrollmentRepository, installmentRepository).getEnrollment({code: "2021EM3A0001"} as EnrollmentDTO).getBalance();
-        expect(calculatedBalance).toBe(3000);
-    })
+        const calculatedBalance = new GetEnrollment(enrollmentRepository, installmentRepository).getEnrollment({code: "2021EM3A0001"} as EnrollmentDTO).getBalance('2021-01-01');
+        expect(calculatedBalance).toBe(-3000);
+    });
+
+    test("Should get enrollment by code with invoice balance", () => {
+        let enrollment = new Enrollment(student, level, enrollmentModule, classroom, 12);
+        generateDummyInstallments();
+        enrollmentRepository.addEnrollment(enrollment);
+        const calculatedBalance = new GetEnrollment(enrollmentRepository, installmentRepository).getEnrollment({code: "2021EM3A0001"} as EnrollmentDTO).getBalance('2021-01-06');
+        expect(calculatedBalance).toBe(-3110);
+    });
+
 });
 
 function setupTestData(){

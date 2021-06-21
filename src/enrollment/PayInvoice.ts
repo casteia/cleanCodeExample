@@ -19,8 +19,8 @@ export default class PayInvoice{
 
     public execute(installmentDTO: InstallmentDTO): number{
         let installment = this.installmentRepository.getInstallment(installmentDTO.code, installmentDTO.month, installmentDTO.year);
-        let amountLeft = installmentDTO.amount - installment.amount;
+        let amountLeft = installment.payAmount(installmentDTO.amount, installmentDTO.date);
         if(amountLeft >= 0) installment.status = InstallmentStatus.Paid;
-        return this.getEnrollment.getEnrollment({code: installmentDTO.code} as EnrollmentDTO).getBalance();
+        return this.getEnrollment.getEnrollment({code: installmentDTO.code} as EnrollmentDTO).getBalance(installmentDTO.date);
     }
 }

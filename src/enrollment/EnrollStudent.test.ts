@@ -16,7 +16,7 @@ let levelRepository: LevelRepository;
 
 let enrollStudent: EnrollStudents;
 
-describe.only("When enrolling student", () => {
+describe("When enrolling student", () => {
     beforeEach(() => {
         Enrollment.totalCount = 0;
         classRepository = new ClassroomRepositoryInMemory();
@@ -75,6 +75,15 @@ describe.only("When enrolling student", () => {
     test("Should get enrollment by code with invoice balance", function() {
         const enrollmentDto = generateEnrollmentDTO("Maria Carolina Fonseca", "755.525.774-26", "2002-03-12", "EM", "1", "C", 12);
         expect(() => enrollStudent.execute(enrollmentDto)).toThrow(new Error(ErrorMessages.lateEnrollment));
+    });
+
+    test("Should calculate due date and return status open or overdue for each invoice", () =>{
+        const enrollmentDto = generateEnrollmentDTO("Maria Carolina Fonseca", "755.525.774-26", "2002-03-12", "EM", "1", "A", 12);
+        let enrollment = enrollStudent.execute(enrollmentDto);
+        for (let index = 0; index < enrollment.installments.length; index++) {
+            const element = enrollment.installments[index];
+            expect(element.dueDate.getMonth()).toBe(index);
+        }
     });
 
 });

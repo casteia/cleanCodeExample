@@ -11,7 +11,8 @@ export default class EnrollmentRepositoryInMemory implements EnrollmentRepositor
     constructor(){}
 
     getEnrollment(code: string): Enrollment {
-        return this.enrollments.find(x => x.code === code) as Enrollment;
+        let data = this.enrollments.find(x => x.code === code) as Enrollment;
+        return data;
     }
 
     addEnrollment(enrollment: Enrollment): void{
