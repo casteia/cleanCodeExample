@@ -9,6 +9,7 @@ import Name from "../entities/name/Name";
 import Student from "../entities/Student/Student";
 import * as ErrorMessages from "../error-messages/ErrorMessages.Util";
 import CalculateInstallments from "./CalculateInstallments";
+import RepositoryAbstractFactory from "../repository/RepositoryAbstractFactory";
 
 
 export default class EnrollStudents{
@@ -16,16 +17,15 @@ export default class EnrollStudents{
     classRepository: ClassroomRepository;
     moduleRepository: ModuleRepository;
     levelRepository: LevelRepository;
+    repository: RepositoryAbstractFactory;
 
-    //Use a Facade? AbstractFactory?
-    constructor(classRepository: ClassroomRepository, moduleRepository: ModuleRepository, levelRepository: LevelRepository){
-        this.classRepository = classRepository;
-        this.moduleRepository = moduleRepository;
-        this.levelRepository = levelRepository;
+    constructor(repositoryAbstractFactory: RepositoryAbstractFactory){
+        this.repository = repositoryAbstractFactory;
+        this.classRepository = repositoryAbstractFactory.getClassroomRepository();
+        this.moduleRepository = repositoryAbstractFactory.getModuleRepository();
+        this.levelRepository = repositoryAbstractFactory.getLevelRepository();
     }
 
-    //public execute(student: Student, level: string, module: string, enrollmentClass: string, installments: number): Enrollment{
-    //
     public execute(enrollmentDTO: EnrollmentDTO): Enrollment{
         const enrollment = new Enrollment(
             new Student(new Name(enrollmentDTO.studentName), enrollmentDTO.studentCpf, enrollmentDTO.studentBirthDate)
@@ -77,7 +77,7 @@ export default class EnrollStudents{
     }
 
     private calculateInstallments(enrollment: Enrollment): Installment[]{
-        return new CalculateInstallments(enrollment).execute();
+        return new CalculateInstallments(enrollment, this.repository).execute();
     }
     
 }

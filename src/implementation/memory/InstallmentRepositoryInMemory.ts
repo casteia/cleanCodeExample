@@ -1,9 +1,15 @@
-import Installment from "../../../domain/entities/Installments/Installment";
-import InstallmentRepository from "../../../domain/repository/InstallmentRepository";
+import Installment from "../../domain/entities/Installments/Installment";
+import InstallmentEventRepository from "../../domain/repository/InstallmentEventRepository";
+import InstallmentRepository from "../../domain/repository/InstallmentRepository";
 
 export default class InstallmentRepositoryInMemory implements InstallmentRepository{
 
+    installmentEventRepository: InstallmentEventRepository;
     installments: Installment[] = [];
+
+    constructor(installmentEventRepository: InstallmentEventRepository){
+        this.installmentEventRepository = installmentEventRepository;
+    }
 
     getInstallment(enrollmentCode: string, month: number, year: number): Installment {
         return this.installments.find(x => x.enrollmentCode === enrollmentCode && x.month === month && x.year === year) as Installment;
@@ -14,7 +20,11 @@ export default class InstallmentRepositoryInMemory implements InstallmentReposit
     }
 
     getInstallmentsByEnrollmentCode(enrollmentCode: string): Installment[]{
-        return this.installments.filter(x => x.enrollmentCode === enrollmentCode);
+        let installmentList = this.installments.filter(x => x.enrollmentCode === enrollmentCode);
+        installmentList.forEach(installment => {
+            installment.events = this.installmentEventRepository.getEvents(enrollmentCode, installment.month, installment.year);
+        });
+        return installmentList;
     }
 
     updateInstallment(installment: Installment): void{

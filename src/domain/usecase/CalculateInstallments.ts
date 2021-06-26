@@ -1,5 +1,7 @@
 import Enrollment from "../entities/enrollment/Enrollment";
 import Installment from "../entities/Installments/Installment";
+import InstallmentRepository from "../repository/InstallmentRepository";
+import RepositoryAbstractFactory from "../repository/RepositoryAbstractFactory";
 
 const monetaryCorrectionFactor = 100;
 
@@ -7,16 +9,22 @@ export default class CalculateInstallments{
 
     enrollment: Enrollment;
     installments: Installment[] = [];
+    repository: RepositoryAbstractFactory;
+    installmentRepository: InstallmentRepository;
 
-    constructor(enrollment: Enrollment){
+    constructor(enrollment: Enrollment, repository: RepositoryAbstractFactory){
         this.enrollment = enrollment;
+        this.repository = repository;
+        this.installmentRepository = repository.getInstallmentRepository();
     }
 
     public execute(): Installment[]{
         for (let index = 0; index < this.enrollment.numberOfInstallments; index++) {
-            this.installments.push(this.calculateMonthlyInstallment(index, index + 1));
+            let calculatedInstallment = this.calculateMonthlyInstallment(index, index + 1);
+            this.installments.push(calculatedInstallment);
+            this.installmentRepository.addInstallment(calculatedInstallment)
         }
-        return this.installments;
+        return this.installmentRepository.getInstallmentsByEnrollmentCode(this.enrollment.code);
     }
 
     private calculateMonthlyInstallment(installmentIndex: number, month: number): Installment{

@@ -1,29 +1,31 @@
-import ClassroomRepository from "../repository/ClassroomRepository";
-import ClassroomRepositoryInMemory from "../../implementation/memory/Classroom/ClassroomRepositoryInMemory";
+import ClassroomRepositoryInMemory from "../../implementation/memory/ClassroomRepositoryInMemory";
+import LevelRepositoryInMemory from "../../implementation/memory/LevelRepositoryInMemory";
+import ModuleRepositoryInMemory from "../../implementation/memory/ModuleRepositoryInMemory";
+import generateDummyStudent from "../../tests/Student.dummy";
 import Enrollment from "../entities/enrollment/Enrollment";
 import EnrollmentDTO from "../entities/enrollment/EnrollmentDTO";
+import ClassroomRepository from "../repository/ClassroomRepository";
 import LevelRepository from "../repository/LevelRepository";
-import LevelRepositoryInMemory from "../../implementation/memory/Level/LevelRepositoryInMemory";
 import ModuleRepository from "../repository/ModuleRepository";
-import ModuleRepositoryInMemory from "../../implementation/memory/Module/ModuleRepositoryInMemory";
-import generateDummyStudent from "../../tests/Student.dummy";
-import * as ErrorMessages from "../error-messages/ErrorMessages.Util";
 import EnrollStudents from "./EnrollStudent";
-
+import * as ErrorMessages from "../error-messages/ErrorMessages.Util"
+import RepositoryAbstractFactory from "../repository/RepositoryAbstractFactory";
+import RepositoryMemoryFactory from "../../implementation/memory/RepositoryMemoryFactory";
 
 let classRepository: ClassroomRepository;
 let moduleRepository: ModuleRepository;
 let levelRepository: LevelRepository;
-
+let repository: RepositoryAbstractFactory;
 let enrollStudent: EnrollStudents;
 
 describe("When enrolling student", () => {
     beforeEach(() => {
         Enrollment.totalCount = 0;
-        classRepository = new ClassroomRepositoryInMemory();
-        moduleRepository = new ModuleRepositoryInMemory();
-        levelRepository = new LevelRepositoryInMemory();
-        enrollStudent = new EnrollStudents(classRepository, moduleRepository, levelRepository);
+        repository = new RepositoryMemoryFactory();
+        classRepository = repository.getClassroomRepository();
+        moduleRepository = repository.getModuleRepository();
+        levelRepository = repository.getLevelRepository();
+        enrollStudent = new EnrollStudents(repository);
         setupData();
     })
     
@@ -73,11 +75,13 @@ describe("When enrolling student", () => {
         });
     });
 
+    //TODO: Fix
     test("Should get enrollment by code with invoice balance", function() {
         const enrollmentDto = generateEnrollmentDTO("Maria Carolina Fonseca", "755.525.774-26", "2002-03-12", "EM", "1", "C", 12);
         expect(() => enrollStudent.execute(enrollmentDto)).toThrow(new Error(ErrorMessages.lateEnrollment));
     });
 
+    //TODO: assert dute date
     test("Should calculate due date and return status open or overdue for each invoice", () =>{
         const enrollmentDto = generateEnrollmentDTO("Maria Carolina Fonseca", "755.525.774-26", "2002-03-12", "EM", "1", "A", 12);
         let enrollment = enrollStudent.execute(enrollmentDto);

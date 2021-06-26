@@ -1,21 +1,25 @@
+import EnrollmentRepositoryInMemory from "../../implementation/memory/EnrollmentRepositoryInMemory";
+import RepositoryMemoryFactory from "../../implementation/memory/RepositoryMemoryFactory";
 import Classroom from "../entities/classroom/Classroom";
 import Enrollment from "../entities/enrollment/Enrollment";
 import EnrollmentDTO from "../entities/enrollment/EnrollmentDTO";
-import EnrollmentRepository from "../repository/EnrollmentRepository";
-import EnrollmentRepositoryInMemory from "../../implementation/memory/Enrollment/EnrollmentRepositoryInMemory";
 import { EnrollmentStatus } from "../entities/enrollment/EnrollmentStatus";
 import Level from "../entities/level/Level";
 import Module from "../entities/module/Module";
 import Name from "../entities/name/Name";
 import Student from "../entities/Student/Student";
+import EnrollmentRepository from "../repository/EnrollmentRepository";
+import RepositoryAbstractFactory from "../repository/RepositoryAbstractFactory";
 import CancelEnrollment from "./CancelEnrollment";
 
 let enrollmentRepository: EnrollmentRepository;
 let cancelEnrollment: CancelEnrollment;
+let repository: RepositoryAbstractFactory
 
 describe("",() => {
     beforeEach(() => {
-        enrollmentRepository = new EnrollmentRepositoryInMemory();
+        repository = new RepositoryMemoryFactory();
+        enrollmentRepository = repository.getEnrollmentRepository();
         cancelEnrollment = new CancelEnrollment(enrollmentRepository);
         setupData();
     });

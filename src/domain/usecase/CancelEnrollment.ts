@@ -5,11 +5,9 @@ import * as ErrorMessages from "../error-messages/ErrorMessages.Util"
 
 export default class CancelEnrollment{
     enrollmentRepository: EnrollmentRepository;
-    //installmentRepository: InstallmentRepository;
 
     constructor(enrollmentRepository: EnrollmentRepository){
         this.enrollmentRepository = enrollmentRepository;
-        //this.installmentRepository = installmentRepository;
     }
 
     execute(enrollmentDto: EnrollmentDTO): EnrollmentStatus{

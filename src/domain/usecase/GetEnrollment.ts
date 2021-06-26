@@ -2,16 +2,19 @@ import Enrollment from "../entities/enrollment/Enrollment";
 import EnrollmentDTO from "../entities/enrollment/EnrollmentDTO";
 import EnrollmentRepository from "../repository/EnrollmentRepository";
 import InstallmentRepository from "../repository/InstallmentRepository";
+import RepositoryAbstractFactory from "../repository/RepositoryAbstractFactory";
 
 
 export default class GetEnrollment{
 
     enrollmentRepository: EnrollmentRepository;
     installmentRepository: InstallmentRepository;
+    repository: RepositoryAbstractFactory;
 
-    constructor(enrollmentRepository: EnrollmentRepository, installmentRepository: InstallmentRepository){
-        this.enrollmentRepository = enrollmentRepository;
-        this.installmentRepository = installmentRepository;
+    constructor(repository: RepositoryAbstractFactory){
+        this.repository = repository;
+        this.enrollmentRepository = this.repository.getEnrollmentRepository();
+        this.installmentRepository = this.repository.getInstallmentRepository();
     }
 
     public getEnrollment(enrollmentDto: EnrollmentDTO): Enrollment{

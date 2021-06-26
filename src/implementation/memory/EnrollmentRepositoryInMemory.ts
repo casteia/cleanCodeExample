@@ -1,9 +1,9 @@
-import Classroom from "../../../domain/entities/classroom/Classroom";
-import Level from "../../../domain/entities/level/Level";
-import Module from "../../../domain/entities/module/Module";
-import Student from "../../../domain/entities/Student/Student";
-import Enrollment from "../../../domain/entities/enrollment/Enrollment";
-import EnrollmentRepository from "../../../domain/repository/EnrollmentRepository";
+import Classroom from "../../domain/entities/classroom/Classroom";
+import Level from "../../domain/entities/level/Level";
+import Module from "../../domain/entities/module/Module";
+import Student from "../../domain/entities/Student/Student";
+import Enrollment from "../../domain/entities/enrollment/Enrollment";
+import EnrollmentRepository from "../../domain/repository/EnrollmentRepository";
 
 export default class EnrollmentRepositoryInMemory implements EnrollmentRepository{
     enrollments: Enrollment[] = [];

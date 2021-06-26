@@ -1,5 +1,5 @@
-import Module from "../../../domain/entities/module/Module";
-import ModuleRepository from "../../../domain/repository/ModuleRepository";
+import Module from "../../domain/entities/module/Module";
+import ModuleRepository from "../../domain/repository/ModuleRepository";
 
 export default class ModuleRepositoryInMemory implements ModuleRepository{
     modules: Module[] = [];
