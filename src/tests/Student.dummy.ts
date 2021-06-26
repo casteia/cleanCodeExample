@@ -1,6 +1,6 @@
-import Cpf from "../models/cpf/Cpf";
-import Name from "../models/name/Name";
-import Student from "../models/Student/Student";
+import Cpf from "../domain/entities/cpf/Cpf";
+import Name from "../domain/entities/name/Name";
+import Student from "../domain/entities/Student/Student";
 
 export default function generateDummyStudent(iterator: number): {studentName: string, studentCpf: string, studentBirthDate: string} {
     const generatedCpf: string[] = [
